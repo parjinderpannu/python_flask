@@ -58,4 +58,21 @@ def get_book_by_isbn(isbn):
       }
   return jsonify(return_value)
 
+# PUT /books/123456789
+# {
+#   'name': 'book name',
+#   'price': 1.99
+# }
+
+# (1) no valid book object from our client
+#   --> not add the book to the store
+
+# valid book object has name and price field
+
+# (2) no valid book object
+
+@app.route('/books/<int:isbn>', methods=['PUT'])
+def replace_book(isbn):
+  return jsonify(request.get_json())
+
 app.run(port=5000)
