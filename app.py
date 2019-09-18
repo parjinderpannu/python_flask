@@ -25,6 +25,11 @@ def get_books():
 #  'price': 6.99,
 #  'isbn': 0123456789
 #}
+def validBookObject(bookObject):
+  if ("name" in bookObject and "price" in bookObject and "isbn" in bookObject):
+    return True
+  else
+    return False
 
 @app.route('/books', methods=['POST'])
 def add_book():
