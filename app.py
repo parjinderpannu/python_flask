@@ -70,13 +70,6 @@ def get_book_by_isbn(isbn):
 #   'price': 1.99
 # }
 
-# (1) no valid book object from our client
-#   --> not add the book to the store
-
-# valid book object has name and price field
-
-# (2) no valid book object
-
 @app.route('/books/<int:isbn>', methods=['PUT'])
 def replace_book(isbn):
   request_data = request.get_json()
@@ -93,7 +86,7 @@ def replace_book(isbn):
     'price': request_data['price'],
     'isbn': isbn
   }
-  i = 0;
+  i = 0
   for book in books:
     currentIsbn = book["isbn"]
     if currentIsbn == isbn:
