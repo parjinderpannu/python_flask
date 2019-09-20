@@ -95,4 +95,36 @@ def replace_book(isbn):
   response = Response("", status=204)
   return response
 
+# PATCH /books/9782371000193
+# {
+#   'name': 'The Cat In The Hat'
+# }
+
+# PATCH /books/9782371000193
+# {
+#   'price': 6.99
+# }
+
+
+@app.route('/books/<int:isbn>', methods=['PATCH'])
+def update_book(isbn):
+  request_data = request.get_json()
+  updated_book = {}
+  if("name" in request_data):
+    update_book = {
+      'name': request_data['name']
+      }
+  if("price" in request_data):
+    update_book = {
+      'price': request_data['price']
+      }
+  for book in books:
+    if book["isbn"] == isbn:
+      book.update(update_book)
+  response = Response("", status=204)
+  response.headers['Location'] = "/books/" + str(isbn)
+  return response
+
+
 app.run(port=5000)
+ 
