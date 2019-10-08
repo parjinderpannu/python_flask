@@ -4,6 +4,15 @@ from BookModel import *
 from settings import *
 import json
 
+import jwt, datetime
+
+app.config['SECRET_KEY'] = 'kungfupanda'
+
+@app.route('/login')
+def get_token():
+  expiration_date = datetime.datetime.utcnow() + datetime.timedelta(seconds=100)
+  token = jwt.encode({'exp': expiration_date}, app.config['SECRET_KEY'], algorithm='HS256')
+  return token
 
 #GET /store
 @app.route('/books')
