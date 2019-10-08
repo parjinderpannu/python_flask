@@ -6,8 +6,20 @@ import json
 
 import jwt, datetime
 from UserModel import User
+from functools import wraps
 
 app.config['SECRET_KEY'] = 'kungfupanda'
+
+def token_required(f):
+  @wraps(f)
+  def wrapper(*args, **kwargs):
+    token = request.args.get('token')
+    try:
+      jwt.decode(token, app.config['SECRET_KEY'])
+      return f(*args, **kwargs)
+    except:
+      return jsonify({'error': 'Need a valid token to view this page'}), 401
+  return wrapper
 
 @app.route('/login', methods=['POST'])
 def get_token():
@@ -27,13 +39,8 @@ def get_token():
 
 #GET /store
 @app.route('/books')
+@token_required
 def get_books():
-  token = request.args.get('token')
-  try:
-    jwt.decode(token, app.config['SECRET_KEY'])
-  except:
-    return jsonify({'error': 'Need a valid token to view this page'}), 401
-
   return jsonify({'books': Book.get_all_books()})
 
 def validBookObject(bookObject):
@@ -49,6 +56,7 @@ def valid_put_request_data(bookObject):
     return False
 
 @app.route('/books', methods=['POST'])
+@token_required
 def add_book():
   request_data = request.get_json()
   if(validBookObject(request_data)):
