@@ -5,14 +5,25 @@ from settings import *
 import json
 
 import jwt, datetime
+from UserModel import User
 
 app.config['SECRET_KEY'] = 'kungfupanda'
 
-@app.route('/login')
+@app.route('/login', methods=['POST'])
 def get_token():
-  expiration_date = datetime.datetime.utcnow() + datetime.timedelta(seconds=100)
-  token = jwt.encode({'exp': expiration_date}, app.config['SECRET_KEY'], algorithm='HS256')
-  return token
+  request_data = request.get_json()
+  print(request_data)
+  username = str(request_data['username'])
+  password = str(request_data['password'])
+
+  match = User.username_password_match(username,password)
+  
+  if match:
+    expiration_date = datetime.datetime.utcnow() + datetime.timedelta(seconds=100)
+    token = jwt.encode({'exp': expiration_date}, app.config['SECRET_KEY'], algorithm='HS256')
+    return token
+  else:
+    return Response('', 401, mimetype='application/json')
 
 #GET /store
 @app.route('/books')
@@ -22,7 +33,7 @@ def get_books():
     jwt.decode(token, app.config['SECRET_KEY'])
   except:
     return jsonify({'error': 'Need a valid token to view this page'}), 401
-    
+
   return jsonify({'books': Book.get_all_books()})
 
 def validBookObject(bookObject):
