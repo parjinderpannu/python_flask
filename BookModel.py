@@ -37,6 +37,12 @@ class Book(db.Model):
         book_to_update.name = _name
         db.session.commit()
 
+    def replace_book(_isbn, _name, _price):
+        book_to_replace = Book.query.filter_by(isbn=_isbn).first()
+        book_to_replace.name = _name
+        book_to_replace.price = _price
+        db.session.commit()
+
     def __repr__(self):
         book_object = {
             'name': self.name,
